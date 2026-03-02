@@ -24,15 +24,18 @@ Deploys a mission-ready field corps using the flat agent library in `~/.claude/a
 ## Field Roster
 
 **The Court (Command Layer):**
+
 - `sovereign` — decrees mission objectives, acceptance criteria, and UAT scrolls
 - `marshall` — owns the campaign board, order of battle, sprint planning, and debriefs
 - `knight-commander` — field authority: gates ranger intel briefs and knight code before the sovereign reviews
 
-**Rangers** *(reconnaissance only — read-only, carry no weapons, never write code)*:
+**Rangers** _(reconnaissance only — read-only, carry no weapons, never write code)_:
+
 - `ranger-frontend` — front-end recon (components, patterns, state — adapts to project's UI stack)
 - `ranger-backend` — back-end recon (routes, services, models, data flow — adapts to project's server stack)
 
-**Knights & Specialists** *(deploy one or many — multiple can ride in parallel on independent objectives)*:
+**Knights & Specialists** _(deploy one or many — multiple can ride in parallel on independent objectives)_:
+
 - `knight-frontend` — frontend implementation (adapts to project's UI framework and component conventions)
 - `knight-backend` — backend/API implementation (adapts to project's server framework and patterns)
 - `artificer-state` — client-side state management (adapts to project's state library)
@@ -82,11 +85,11 @@ The brigade operates best when it has a written plan to execute against. The ric
 
 **Supported upstream plan sources:**
 
-| Source | When to Use |
-|--------|-------------|
-| **`war-plans`** | Complex multi-step features — produces a saved plan file in `docs/plans/` that the marshall consumes directly; skip sovereign, use "Starting from an existing plan" workflow |
-| **Claude Plan Mode** (`EnterPlanMode` / `ExitPlanMode`) | In-session planning — explore the codebase, design the approach, get approval, then invoke the brigade to execute |
-| **Cursor plan** (`.cursor/` or `instructions/` markdown) | Plans written in Cursor or saved as markdown specs — read the file, extract tasks, feed to marshall as if it were a `writing-plans` output; skip sovereign |
+| Source                                                   | When to Use                                                                                                                                                                  |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`war-plans`**                                          | Complex multi-step features — produces a saved plan file in `docs/plans/` that the marshall consumes directly; skip sovereign, use "Starting from an existing plan" workflow |
+| **Claude Plan Mode** (`EnterPlanMode` / `ExitPlanMode`)  | In-session planning — explore the codebase, design the approach, get approval, then invoke the brigade to execute                                                            |
+| **Cursor plan** (`.cursor/` or `instructions/` markdown) | Plans written in Cursor or saved as markdown specs — read the file, extract tasks, feed to marshall as if it were a `writing-plans` output; skip sovereign                   |
 
 **No plan in context? Ask first — don't assume.**
 
@@ -104,15 +107,18 @@ A plan produces a tighter order of battle, but it's not always needed — quick 
 ## Campaign Configuration
 
 Before starting, ask the user:
+
 > "How many sprints do you want? (default: 1)"
 
 **Sprint count** determines how the campaign is divided:
+
 - **1 sprint** — all objectives in one campaign, single court review at the end
 - **N sprints** — marshall divides objectives into N sprint buckets, user reviews after each sprint before the next begins
 
 If the user doesn't specify, default to 1 sprint.
 
 **Campaign board (sprint.md)** is created by `marshall` at kickoff and saved to `docs/plans/sprints/YYYY-MM-DD-<feature-name>-sprint.md`. It is the order of battle — backlog, status tracker, and permanent audit trail. The marshall updates it:
+
 - When a task moves to in-progress
 - When a task completes or is blocked
 - After each sprint debrief
@@ -155,18 +161,18 @@ If the user doesn't specify, default to 1 sprint.
 5. **For each sprint:**
    a. Announce: "Riding out — Sprint [N] of [total]: [sprint objective]"
    b. **For each task in the order of battle:**
-      - `marshall` → mark task 🔄 in-progress in campaign board **before** deploying rangers
-      - Ranger(s) → ride in parallel, return intel brief
-      - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
-      - Knight(s)/Specialist(s) → deploy using approved intel brief; **ride multiple in parallel when objectives are independent**
-      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with the responsible agent (knight, armorer, herald, or any specialist); **every specialist gets this gate, no exceptions**
-      - `marshall` → mark task ✅ done (or ⛔ blocked) in campaign board **after** code review clears
-   c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
-   d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no before proceeding
-   e. *(If yes)* `sovereign` → commissions UAT scroll, saved to `docs/plans/sprints/uat/`, presents to user — wait for user to inspect before advancing
-   f. *(If yes)* `sovereign` → triages filled-in scroll (breaches / refinements / new decrees → sprint placement)
-   g. *(If yes)* `marshall` → adds groomed items to next sprint order of battle, updates campaign board
-   h. *(If no)* Present sprint summary to user — wait for acknowledgment before advancing
+   - `marshall` → mark task 🔄 in-progress in campaign board **before** deploying rangers
+   - Ranger(s) → ride in parallel, return intel brief
+   - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
+   - Knight(s)/Specialist(s) → deploy using approved intel brief; **ride multiple in parallel when objectives are independent**
+   - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with the responsible agent (knight, armorer, herald, or any specialist); **every specialist gets this gate, no exceptions**
+   - `marshall` → mark task ✅ done (or ⛔ blocked) in campaign board **after** code review clears
+     c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
+     d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no before proceeding
+     e. _(If yes)_ `sovereign` → commissions UAT scroll, saved to `docs/plans/sprints/uat/`, presents to user — wait for user to inspect before advancing
+     f. _(If yes)_ `sovereign` → triages filled-in scroll (breaches / refinements / new decrees → sprint placement)
+     g. _(If yes)_ `marshall` → adds groomed items to next sprint order of battle, updates campaign board
+     h. _(If no)_ Present sprint summary to user — wait for acknowledgment before advancing
 6. After final sprint: `sovereign` → full acceptance criteria sign-off; **ask user if they want a final UAT scroll** before commissioning one
 7. **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
 
@@ -181,18 +187,18 @@ When invoked after `writing-plans` with a saved plan file:
 5. **For each sprint:**
    a. Announce: "Riding out — Sprint [N] of [total]"
    b. **For each task in the order of battle:**
-      - `marshall` → mark task 🔄 in-progress **before** deploying rangers
-      - Ranger(s) → ride in parallel, return intel brief
-      - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
-      - Knight(s)/Specialist(s) → deploy using plan task text + approved intel brief; **ride multiple in parallel when objectives are independent**
-      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with the responsible agent (knight, armorer, herald, or any specialist); **every specialist gets this gate, no exceptions**
-      - `marshall` → mark task ✅ done (or ⛔ blocked) **after** code review clears
-   c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
-   d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no
-   e. *(If yes)* `sovereign` → commissions UAT scroll, presents to user — wait for inspection before advancing
-   f. *(If yes)* `sovereign` → triages filled-in scroll, groomed items handed to marshall
-   g. *(If yes)* `marshall` → adds groomed items to next sprint order of battle, updates campaign board
-   h. *(If no)* Present sprint summary to user — wait for acknowledgment before advancing
+   - `marshall` → mark task 🔄 in-progress **before** deploying rangers
+   - Ranger(s) → ride in parallel, return intel brief
+   - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
+   - Knight(s)/Specialist(s) → deploy using plan task text + approved intel brief; **ride multiple in parallel when objectives are independent**
+   - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with the responsible agent (knight, armorer, herald, or any specialist); **every specialist gets this gate, no exceptions**
+   - `marshall` → mark task ✅ done (or ⛔ blocked) **after** code review clears
+     c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
+     d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no
+     e. _(If yes)_ `sovereign` → commissions UAT scroll, presents to user — wait for inspection before advancing
+     f. _(If yes)_ `sovereign` → triages filled-in scroll, groomed items handed to marshall
+     g. _(If yes)_ `marshall` → adds groomed items to next sprint order of battle, updates campaign board
+     h. _(If no)_ Present sprint summary to user — wait for acknowledgment before advancing
 6. `marshall` → final victory review against all plan tasks
 7. **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
 
@@ -221,3 +227,4 @@ If the user names specific agents, skip auto-selection and deploy those agents d
 - **UAT findings are binding decrees** — if the user opts in and fills in the scroll, every item must be triaged and groomed into the backlog, never ignored
 - **Carry-overs are declared openly** — if a task doesn't complete in a sprint, marshall calls it out and it moves to the next order of battle, it never silently disappears
 - **Never call the armorer or test skills unbidden** — do not invoke `armorer`, `superpowers:test-driven-development`, `superpowers:verification-before-completion`, or any test/verify skill unless: (a) the user explicitly requests it, or (b) existing test files were directly touched or new tests are required by the task
+- **Knights and specialists NEVER compile or run tests** — no build, typecheck, lint, or test commands of any kind. Knights write code only. The ONLY agent permitted to run tests is the `armorer`, and only when explicitly requested by the user. Compilation and verification are manual steps performed by the user, not the brigade.
