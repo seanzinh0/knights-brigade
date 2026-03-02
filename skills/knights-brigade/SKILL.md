@@ -29,20 +29,20 @@ Deploys a mission-ready field corps using the flat agent library in `~/.claude/a
 - `knight-commander` — field authority: gates ranger intel briefs and knight code before the sovereign reviews
 
 **Rangers** *(reconnaissance only — read-only, carry no weapons, never write code)*:
-- `ranger-frontend` — front-end recon (components, patterns, state)
-- `ranger-backend` — back-end recon (routes, services, models, data flow)
+- `ranger-frontend` — front-end recon (components, patterns, state — adapts to project's UI stack)
+- `ranger-backend` — back-end recon (routes, services, models, data flow — adapts to project's server stack)
 
 **Knights & Specialists** *(deploy one or many — multiple can ride in parallel on independent objectives)*:
-- `knight-frontend` — React/TypeScript implementation
-- `knight-backend` — Node.js/API implementation
-- `artificer-state` — Easy Peasy state management
-- `artificer-data` — Objection.js queries + Knex migrations
+- `knight-frontend` — frontend implementation (adapts to project's UI framework and component conventions)
+- `knight-backend` — backend/API implementation (adapts to project's server framework and patterns)
+- `artificer-state` — client-side state management (adapts to project's state library)
+- `artificer-data` — data layer implementation: queries, repositories, migrations (adapts to project's ORM/DB)
 - `castle-architect` — DB schema design (pairs with artificer-data)
 - `grand-architect` — cross-layer architecture decisions
 - `siege-engineer` — distributed systems / event-driven design
-- `quartermaster` — Terraform / AWS / Docker infrastructure
-- `herald` — Tailwind/visual design + Figma implementation
-- `armorer` — Jest test authoring
+- `quartermaster` — infrastructure as code, cloud resources, containerization
+- `herald` — visual design + styling implementation (adapts to project's CSS/design system)
+- `armorer` — test authoring (adapts to project's test framework)
 
 ---
 
@@ -51,22 +51,22 @@ Deploys a mission-ready field corps using the flat agent library in `~/.claude/a
 **Frontend theatre** (UI, components, styling):
 → sovereign + marshall + ranger-frontend + knight-frontend + herald
 
-**Back-end theatre** (API, services, DB):
+**Backend theatre** (API, services, DB):
 → sovereign + marshall + ranger-backend + knight-backend + artificer-data
 
-**Schema/data theatre** (new tables, migrations):
+**Schema/data theatre** (new tables, migrations, query changes):
 → castle-architect + artificer-data (no ranger needed — castle-architect rides their own recon)
 
-**State management theatre**:
+**State management theatre** (client-side state, stores):
 → ranger-frontend + artificer-state + knight-frontend
 
 **Full-stack theatre**:
 → Full court + both rangers + knight-frontend + knight-backend + artificer-data + herald
 
 **Architecture/design theatre**:
-→ grand-architect (no ranger) or siege-engineer for distributed concerns
+→ grand-architect (no ranger) or siege-engineer for distributed/event-driven concerns
 
-**Infrastructure theatre**:
+**Infrastructure theatre** (cloud resources, IaC, containers):
 → quartermaster (no ranger — quartermaster rides their own recon)
 
 **Testing theatre**:
