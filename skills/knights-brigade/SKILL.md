@@ -1,0 +1,174 @@
+---
+name: knights-brigade
+description: Assembles and deploys the Knights Brigade — a field corps of specialist agents for the current task. Automatically selects the right command, rangers, and knights/specialists based on the theatre. Use when starting any non-trivial engineering task. Can be overridden by naming specific agents.
+---
+
+# Knights Brigade
+
+```
+        ╔══════════════════════════════╗
+        ║                              ║
+        ║    ⚔  KNIGHTS BRIGADE  ⚔    ║
+        ║                              ║
+        ║   Rangers ride first.        ║
+        ║   Knights hold the line.     ║
+        ║   The Sovereign commands.    ║
+        ║                              ║
+        ╚══════════════════════════════╝
+```
+
+Deploys a mission-ready field corps using the flat agent library in `~/.claude/agents/`. Rangers ride ahead for reconnaissance. Knights execute based on their intel. The command layer sets objectives and tracks the campaign.
+
+---
+
+## Field Roster
+
+**The Court (Command Layer):**
+- `sovereign` — decrees mission objectives, acceptance criteria, and UAT scrolls
+- `marshall` — owns the campaign board, order of battle, sprint planning, and debriefs
+- `knight-commander` — field authority: gates ranger intel briefs and knight code before the sovereign reviews
+
+**Rangers** *(reconnaissance only — read-only, carry no weapons, never write code)*:
+- `ranger-frontend` — front-end recon (components, patterns, state)
+- `ranger-backend` — back-end recon (routes, services, models, data flow)
+
+**Knights & Specialists** *(deploy one or many — multiple can ride in parallel on independent objectives)*:
+- `knight-frontend` — React/TypeScript implementation
+- `knight-backend` — Node.js/API implementation
+- `artificer-state` — Easy Peasy state management
+- `artificer-data` — Objection.js queries + Knex migrations
+- `castle-architect` — DB schema design (pairs with artificer-data)
+- `grand-architect` — cross-layer architecture decisions
+- `siege-engineer` — distributed systems / event-driven design
+- `quartermaster` — Terraform / AWS / Docker infrastructure
+- `herald` — Tailwind/visual design + Figma implementation
+- `armorer` — Jest test authoring
+
+---
+
+## Theatre Compositions
+
+**Frontend theatre** (UI, components, styling):
+→ sovereign + marshall + ranger-frontend + knight-frontend + herald
+
+**Back-end theatre** (API, services, DB):
+→ sovereign + marshall + ranger-backend + knight-backend + artificer-data
+
+**Schema/data theatre** (new tables, migrations):
+→ castle-architect + artificer-data (no ranger needed — castle-architect rides their own recon)
+
+**State management theatre**:
+→ ranger-frontend + artificer-state + knight-frontend
+
+**Full-stack theatre**:
+→ Full court + both rangers + knight-frontend + knight-backend + artificer-data + herald
+
+**Architecture/design theatre**:
+→ grand-architect (no ranger) or siege-engineer for distributed concerns
+
+**Infrastructure theatre**:
+→ quartermaster (no ranger — quartermaster rides their own recon)
+
+**Testing theatre**:
+→ armorer (deploy directly, no ranger needed)
+
+> **Multi-knight deployment**: When a sprint task requires it, deploy multiple knights/specialists in parallel against independent objectives — e.g. knight-frontend + artificer-state + herald all riding simultaneously on different files. Never hold knights back if their objectives don't conflict.
+
+---
+
+## Campaign Configuration
+
+Before starting, ask the user:
+> "How many sprints do you want? (default: 1)"
+
+**Sprint count** determines how the campaign is divided:
+- **1 sprint** — all objectives in one campaign, single court review at the end
+- **N sprints** — marshall divides objectives into N sprint buckets, user reviews after each sprint before the next begins
+
+If the user doesn't specify, default to 1 sprint.
+
+**Campaign board (sprint.md)** is created by `marshall` at kickoff and saved to `docs/plans/sprints/YYYY-MM-DD-<feature-name>-sprint.md`. It is the order of battle — backlog, status tracker, and permanent audit trail. The marshall updates it:
+- When a task moves to in-progress
+- When a task completes or is blocked
+- After each sprint debrief
+- After sovereign/user feedback is incorporated
+
+**UAT scrolls** are commissioned by `sovereign` after each sprint (if requested) and saved to `docs/plans/sprints/uat/YYYY-MM-DD-<feature-name>-uat-sprint-[N].md`.
+
+---
+
+## Campaign Workflow
+
+### Starting from a task description (default)
+
+1. **Classify** the theatre using the compositions above
+2. **Present the proposed field corps + sprint count** — list the agents and how many sprints
+3. **Ask for approval or override** before deploying
+4. **Court setup:**
+   a. `sovereign` → decrees mission spec with acceptance criteria
+   b. `marshall` → produces order of battle, divides into N sprint buckets, creates campaign board
+5. **For each sprint:**
+   a. Announce: "Riding out — Sprint [N] of [total]: [sprint objective]"
+   b. **For each task in the order of battle:**
+      - `marshall` → mark task 🔄 in-progress in campaign board **before** deploying rangers
+      - Ranger(s) → ride in parallel, return intel brief
+      - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
+      - Knight(s)/Specialist(s) → deploy using approved intel brief; **ride multiple in parallel when objectives are independent**
+      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with knight
+      - `marshall` → mark task ✅ done (or ⛔ blocked) in campaign board **after** code review clears
+   c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
+   d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no before proceeding
+   e. *(If yes)* `sovereign` → commissions UAT scroll, saved to `docs/plans/sprints/uat/`, presents to user — wait for user to inspect before advancing
+   f. *(If yes)* `sovereign` → triages filled-in scroll (breaches / refinements / new decrees → sprint placement)
+   g. *(If yes)* `marshall` → adds groomed items to next sprint order of battle, updates campaign board
+   h. *(If no)* Present sprint summary to user — wait for acknowledgment before advancing
+6. After final sprint: `sovereign` → full acceptance criteria sign-off; **ask user if they want a final UAT scroll** before commissioning one
+7. **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
+
+### Starting from an existing plan (Option 3 from writing-plans)
+
+When invoked after `writing-plans` with a saved plan file:
+
+1. **Read the plan** — extract all tasks and context
+2. **Ask sprint count** before deploying
+3. **Skip sovereign** — the decree is already in the plan
+4. **Deploy marshall** to divide plan tasks into N sprint buckets, create campaign board
+5. **For each sprint:**
+   a. Announce: "Riding out — Sprint [N] of [total]"
+   b. **For each task in the order of battle:**
+      - `marshall` → mark task 🔄 in-progress **before** deploying rangers
+      - Ranger(s) → ride in parallel, return intel brief
+      - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
+      - Knight(s)/Specialist(s) → deploy using plan task text + approved intel brief; **ride multiple in parallel when objectives are independent**
+      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with knight
+      - `marshall` → mark task ✅ done (or ⛔ blocked) **after** code review clears
+   c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
+   d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no
+   e. *(If yes)* `sovereign` → commissions UAT scroll, presents to user — wait for inspection before advancing
+   f. *(If yes)* `sovereign` → triages filled-in scroll, groomed items handed to marshall
+   g. *(If yes)* `marshall` → adds groomed items to next sprint order of battle, updates campaign board
+   h. *(If no)* Present sprint summary to user — wait for acknowledgment before advancing
+6. `marshall` → final victory review against all plan tasks
+7. **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
+
+---
+
+## Override Support
+
+If the user names specific agents, skip auto-selection and deploy those agents directly (still run the court unless user says not to).
+
+---
+
+## Laws of the Campaign
+
+- **Rangers never ride without knights** to act on their intel — recon without follow-through is waste
+- **Always deploy sovereign first** for feature work (skip for pure refactors/fixes)
+- **Knights do not re-read files** the ranger already covered — pass the intel brief as input
+- **Rangers always ride in parallel** — they are read-only and never conflict, dispatch all at once in a single message
+- **Knights ride in parallel when objectives are independent** — parallel allowed when tasks touch different files with no shared state; forbidden when tasks write to the same file or one depends on the other's output; **scale the force to match the campaign**
+- **knight-commander rides in parallel with the next ranger where possible** — while one knight's code review runs, the next task's rangers can already be in the field
+- **Always hold at the gate between sprints** — never auto-advance without user acknowledgment
+- **Always ask before commissioning a UAT scroll** — never auto-generate one; ask "Would you like a UAT scroll for this sprint?" and wait
+- **UAT findings are binding decrees** — if the user opts in and fills in the scroll, every item must be triaged and groomed into the backlog, never ignored
+- **Carry-overs are declared openly** — if a task doesn't complete in a sprint, marshall calls it out and it moves to the next order of battle, it never silently disappears
+- **Never call the armorer or test skills unbidden** — do not invoke `armorer`, `superpowers:test-driven-development`, `superpowers:verification-before-completion`, or any test/verify skill unless: (a) the user explicitly requests it, or (b) existing test files were directly touched or new tests are required by the task
