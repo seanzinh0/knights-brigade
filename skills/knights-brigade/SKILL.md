@@ -76,6 +76,31 @@ Deploys a mission-ready field corps using the flat agent library in `~/.claude/a
 
 ---
 
+## Fuel the Campaign with a Plan First
+
+The brigade operates best when it has a written plan to execute against. The richer the plan, the tighter the order of battle.
+
+**Supported upstream plan sources:**
+
+| Source | When to Use |
+|--------|-------------|
+| **`war-plans`** | Complex multi-step features — produces a saved plan file in `docs/plans/` that the marshall consumes directly; skip sovereign, use "Starting from an existing plan" workflow |
+| **Claude Plan Mode** (`EnterPlanMode` / `ExitPlanMode`) | In-session planning — explore the codebase, design the approach, get approval, then invoke the brigade to execute |
+| **Cursor plan** (`.cursor/` or `instructions/` markdown) | Plans written in Cursor or saved as markdown specs — read the file, extract tasks, feed to marshall as if it were a `writing-plans` output; skip sovereign |
+
+**No plan in context? Ask first — don't assume.**
+
+If the brigade is invoked with no plan in context (no plan file, no Claude plan mode output, no Cursor spec), ask the user before proceeding:
+
+> "No existing plan detected. Would you like the War Scribe to draft a campaign plan first, or should the brigade deploy directly?"
+
+- **If the user wants a plan:** Invoke `war-plans` → produce a saved plan in `docs/plans/` → once approved, proceed to Campaign Overview using the "Starting from an existing plan" workflow
+- **If the user wants to deploy directly:** Skip the War Scribe. Proceed to the Campaign Overview and let the sovereign decree the mission spec at kickoff (default workflow).
+
+A plan produces a tighter order of battle, but it's not always needed — quick fixes, small tasks, and targeted reviews can ride out immediately.
+
+---
+
 ## Campaign Configuration
 
 Before starting, ask the user:
@@ -102,8 +127,28 @@ If the user doesn't specify, default to 1 sprint.
 ### Starting from a task description (default)
 
 1. **Classify** the theatre using the compositions above
-2. **Present the proposed field corps + sprint count** — list the agents and how many sprints
-3. **Ask for approval or override** before deploying
+2. **Present the Campaign Overview** — display this block to the user and **wait for approval before deploying a single agent**:
+
+   ```
+   ⚔ CAMPAIGN OVERVIEW
+   ─────────────────────────────────
+   Theatre:     [e.g. Back-end / Full-stack / Testing]
+   Objective:   [1-sentence summary of what the campaign will accomplish]
+   Sprints:     [N] (default: 1)
+
+   Field Corps:
+     Court      → sovereign, marshall, knight-commander
+     Rangers    → [ranger-backend / ranger-frontend / none]
+     Knights    → [list of knights/specialists]
+
+   Order of Battle:
+     Sprint 1: [task 1], [task 2], ...
+     Sprint 2: [task 3], ... (if N > 1)
+   ─────────────────────────────────
+   Awaiting your command. Override agents or sprint count, or reply to ride out.
+   ```
+
+3. **Do not deploy any agent until the user approves** — accept overrides (different agents, different sprint count, scope changes) and revise the overview if needed
 4. **Court setup:**
    a. `sovereign` → decrees mission spec with acceptance criteria
    b. `marshall` → produces order of battle, divides into N sprint buckets, creates campaign board
@@ -114,7 +159,7 @@ If the user doesn't specify, default to 1 sprint.
       - Ranger(s) → ride in parallel, return intel brief
       - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
       - Knight(s)/Specialist(s) → deploy using approved intel brief; **ride multiple in parallel when objectives are independent**
-      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with knight
+      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with the responsible agent (knight, armorer, herald, or any specialist); **every specialist gets this gate, no exceptions**
       - `marshall` → mark task ✅ done (or ⛔ blocked) in campaign board **after** code review clears
    c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
    d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no before proceeding
@@ -140,7 +185,7 @@ When invoked after `writing-plans` with a saved plan file:
       - Ranger(s) → ride in parallel, return intel brief
       - `knight-commander` (intel review) → ✅ clear or ❌ send rangers back to the field
       - Knight(s)/Specialist(s) → deploy using plan task text + approved intel brief; **ride multiple in parallel when objectives are independent**
-      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with knight
+      - `knight-commander` (code review) → ✅ advance or ❌ stand down — fix loop with the responsible agent (knight, armorer, herald, or any specialist); **every specialist gets this gate, no exceptions**
       - `marshall` → mark task ✅ done (or ⛔ blocked) **after** code review clears
    c. `marshall` → sprint debrief + retrospective, updates campaign board audit trail
    d. **Ask the user: "Would you like a UAT scroll for this sprint?"** — wait for yes/no
@@ -161,12 +206,16 @@ If the user names specific agents, skip auto-selection and deploy those agents d
 
 ## Laws of the Campaign
 
+- **No plan? Ask, don't assume** — if no plan is in context, ask the user: "Would you like the War Scribe to draft a plan, or should the brigade deploy directly?" Respect their answer — a plan is recommended for complex campaigns but not mandatory
+- **Cursor plans and `instructions/` markdown are first-class** — treat them the same as `writing-plans` output; read the file, extract tasks, hand to marshall, skip sovereign
+- **Always present the Campaign Overview and wait for approval** — no agent deploys before the user sees the theatre, field corps, and order of battle and gives the command to ride out
 - **Rangers never ride without knights** to act on their intel — recon without follow-through is waste
 - **Always deploy sovereign first** for feature work (skip for pure refactors/fixes)
 - **Knights do not re-read files** the ranger already covered — pass the intel brief as input
 - **Rangers always ride in parallel** — they are read-only and never conflict, dispatch all at once in a single message
 - **Knights ride in parallel when objectives are independent** — parallel allowed when tasks touch different files with no shared state; forbidden when tasks write to the same file or one depends on the other's output; **scale the force to match the campaign**
-- **knight-commander rides in parallel with the next ranger where possible** — while one knight's code review runs, the next task's rangers can already be in the field
+- **knight-commander gates every specialist, not just knights** — armorer, herald, artificer-state, artificer-data, castle-architect, siege-engineer, quartermaster — every agent that produces output gets a knight-commander review before the marshall marks the task done
+- **knight-commander rides in parallel with the next ranger where possible** — while one specialist's code review runs, the next task's rangers can already be in the field
 - **Always hold at the gate between sprints** — never auto-advance without user acknowledgment
 - **Always ask before commissioning a UAT scroll** — never auto-generate one; ask "Would you like a UAT scroll for this sprint?" and wait
 - **UAT findings are binding decrees** — if the user opts in and fills in the scroll, every item must be triaged and groomed into the backlog, never ignored

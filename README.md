@@ -26,7 +26,7 @@ cd knights-brigade
 ./install.sh
 ```
 
-That's it. The script copies all agents to `~/.claude/agents/` and the skill to `~/.claude/skills/knights-brigade/SKILL.md`.
+That's it. The script copies all agents to `~/.claude/agents/` and the skills to `~/.claude/skills/`.
 
 ### Manual install
 
@@ -34,9 +34,11 @@ That's it. The script copies all agents to `~/.claude/agents/` and the skill to 
 # Copy agents
 cp agents/*.md ~/.claude/agents/
 
-# Copy skill
+# Copy skills
 mkdir -p ~/.claude/skills/knights-brigade
 cp skills/knights-brigade/SKILL.md ~/.claude/skills/knights-brigade/SKILL.md
+mkdir -p ~/.claude/skills/war-plans
+cp skills/war-plans/SKILL.md ~/.claude/skills/war-plans/SKILL.md
 ```
 
 ---
@@ -49,7 +51,13 @@ Start any non-trivial engineering task by invoking the skill:
 /knights-brigade
 ```
 
-Or in a conversation, Claude will automatically select the right agents for your task.
+Or draft a campaign plan first, then deploy:
+
+```
+/war-plans
+```
+
+Claude will automatically select the right agents for your task.
 
 Claude will:
 1. Classify your task into the right **theatre** (frontend, backend, full-stack, etc.)
@@ -67,6 +75,11 @@ Claude will:
 | `sovereign` | Translates vague requests into precise mission specs with acceptance criteria |
 | `marshall` | Owns the campaign board, sprint planning, and debriefs |
 | `knight-commander` | Gates ranger intel briefs and knight code before sovereign review |
+
+### Planning
+| Agent | Role |
+|-------|------|
+| `war-scribe` | Researches the codebase and drafts implementation plans before the brigade deploys |
 
 ### Rangers *(read-only recon — never write code)*
 | Agent | Role |
@@ -158,8 +171,11 @@ knights-brigade/
 │   ├── siege-engineer.md
 │   ├── quartermaster.md
 │   ├── herald.md
-│   └── armorer.md
+│   ├── armorer.md
+│   └── war-scribe.md
 └── skills/
-    └── knights-brigade/
+    ├── knights-brigade/
+    │   └── SKILL.md
+    └── war-plans/
         └── SKILL.md
 ```
