@@ -8,7 +8,7 @@ description: Assembles and deploys the Knights Brigade — a field corps of spec
 ```
         ╔══════════════════════════════╗
         ║                              ║
-        ║    ⚔  KNIGHTS BRIGADE  ⚔    ║
+        ║    ⚔  KNIGHTS BRIGADE  ⚔     ║
         ║                              ║
         ║   Rangers ride first.        ║
         ║   Knights hold the line.     ║

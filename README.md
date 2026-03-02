@@ -3,7 +3,7 @@
 ```
         ╔══════════════════════════════╗
         ║                              ║
-        ║    ⚔  KNIGHTS BRIGADE  ⚔    ║
+        ║    ⚔  KNIGHTS BRIGADE  ⚔     ║
         ║                              ║
         ║   Rangers ride first.        ║
         ║   Knights hold the line.     ║
