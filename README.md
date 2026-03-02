@@ -77,16 +77,16 @@ Claude will:
 ### Knights & Specialists
 | Agent | Role |
 |-------|------|
-| `knight-frontend` | React/TypeScript implementation |
-| `knight-backend` | Node.js/API implementation |
-| `artificer-state` | Easy Peasy state management |
-| `artificer-data` | Objection.js queries + Knex migrations |
+| `knight-frontend` | Frontend implementation (adapts to project's UI framework) |
+| `knight-backend` | Backend/API implementation (adapts to project's server framework) |
+| `artificer-state` | Client-side state management (adapts to project's state library) |
+| `artificer-data` | Data layer: queries, migrations (adapts to project's ORM/DB) |
 | `castle-architect` | DB schema design |
 | `grand-architect` | Cross-layer architecture decisions |
 | `siege-engineer` | Distributed systems / event-driven design |
-| `quartermaster` | Terraform / AWS / Docker infrastructure |
-| `herald` | Tailwind/visual design + Figma implementation |
-| `armorer` | Jest test authoring |
+| `quartermaster` | Infrastructure as code, cloud resources, containerization |
+| `herald` | Visual design + styling implementation (adapts to project's CSS/design system) |
+| `armorer` | Test authoring (adapts to project's test framework) |
 
 ---
 
