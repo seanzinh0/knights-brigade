@@ -7,7 +7,9 @@ description: Use when starting any non-trivial engineering task that needs a wri
 
 ## Overview
 
-Draft a comprehensive implementation plan that any engineer — or any agent — can execute without knowing the codebase. Document every file to touch, every command to run, exact code, test steps, and commit points. Bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+Draft a comprehensive implementation plan that any engineer — or any agent — can execute without knowing the codebase. Document every file to touch, exact code, and test steps. Bite-sized tasks. DRY. YAGNI. TDD.
+
+> **Plans contain ONLY code and file paths.** Never include `git commit`, `git add`, lint commands (`npm run lint`, `eslint`), build commands (`npm run build`, `nx build`), or any shell commands other than test runner commands.
 
 **Announce at start:** "The War Scribe is drafting the campaign plan."
 
@@ -27,9 +29,10 @@ Each step is one atomic action (2–5 minutes):
 - "Run it to confirm it fails" — step
 - "Write minimal implementation to make it pass" — step
 - "Run tests and confirm green" — step
-- "Commit" — step
 
-Never combine implementation + test + commit into one step. Break them apart.
+Never combine implementation and test into one step. Break them apart.
+
+> **Never add commit steps, lint steps, or build steps.** The user handles all of that manually.
 
 ---
 
@@ -95,13 +98,6 @@ export function myFunction(input: InputType): OutputType {
 node 'node_modules/jest/bin/jest.js' 'apps/admin-api/__tests__/handlers/Example.spec.ts' -t 'describe block name'
 ```
 Expected: PASS
-
-**Step 5: Commit**
-
-```bash
-git add apps/admin-api/__tests__/handlers/Example.spec.ts apps/admin-api/src/handlers/Example.ts
-git commit -m "feat: add specific feature"
-```
 ````
 
 ---
@@ -110,7 +106,7 @@ git commit -m "feat: add specific feature"
 
 The War Scribe discovers project conventions from the codebase — CLAUDE.md, AGENTS.md, memory files, package.json, and existing code patterns. Never hardcode project-specific conventions into this skill.
 
-The plan will include a **Terrain Report** section with the discovered stack, test runner command, import conventions, and commit workflow.
+The plan will include a **Terrain Report** section with the discovered stack, test runner command, and import conventions.
 
 ---
 
@@ -153,8 +149,7 @@ Which path?
 
 - **Exact file paths always** — never "the handler file", always `apps/admin-api/src/handlers/Conditions.handler.ts`
 - **Complete code in the plan** — not "add validation here", write the actual code
-- **Exact commands with expected output** — include what PASS and FAIL look like
+- **Test commands only** — the only shell commands allowed in a plan are test runner commands; never include `git commit`, `git add`, lint commands, or build commands
 - **TDD always** — test step before implementation step, every task
-- **Frequent commits** — one commit per task minimum
 - **No YAGNI violations** — plan only what the objective requires, nothing extra
 - **Research before writing** — read the codebase first, never guess at patterns
