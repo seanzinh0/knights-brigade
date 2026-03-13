@@ -102,6 +102,12 @@ If the brigade is invoked with no plan in context (no plan file, no Claude plan 
 
 A plan produces a tighter order of battle, but it's not always needed — quick fixes, small tasks, and targeted reviews can ride out immediately.
 
+**New feature or component with no plan? Strongly recommend war-plans.**
+
+If the task is creating something new (a new component, a new feature, a new endpoint) and no plan exists, the recommendation should lean toward war-plans — not just a neutral ask. Without a plan, the Campaign Overview will be hollow: the sovereign has no domain knowledge, the order of battle will be generic, and the knights will ride blind. A war-plans run first produces the codebase research, existing patterns, and task breakdown that makes the campaign meaningful.
+
+> "This looks like a new feature with no existing plan. I'd recommend running war-plans first so the brigade has a concrete order of battle. Want me to invoke the War Scribe, or deploy directly?"
+
 ---
 
 ## Campaign Configuration
@@ -227,4 +233,5 @@ If the user names specific agents, skip auto-selection and deploy those agents d
 - **UAT findings are binding decrees** — if the user opts in and fills in the scroll, every item must be triaged and groomed into the backlog, never ignored
 - **Carry-overs are declared openly** — if a task doesn't complete in a sprint, marshall calls it out and it moves to the next order of battle, it never silently disappears
 - **Never call the armorer or test skills unbidden** — do not invoke `armorer`, `superpowers:test-driven-development`, `superpowers:verification-before-completion`, or any test/verify skill unless: (a) the user explicitly requests it, or (b) existing test files were directly touched or new tests are required by the task
+- **Never silently substitute unknown artifacts** — if the user references a handler, component, file, or entity by name that cannot be found in the codebase, stop and ask: "I couldn't find [name] — did you mean [closest match], or should I proceed with the name as given?" Do not infer a substitute and proceed as if it were the intended target
 - **Knights and specialists NEVER compile or run tests** — no build, typecheck, lint, or test commands of any kind. Knights write code only. The ONLY agent permitted to run tests is the `armorer`, and only when explicitly requested by the user. Compilation and verification are manual steps performed by the user, not the brigade.
