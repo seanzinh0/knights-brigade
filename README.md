@@ -142,72 +142,11 @@ Rangers always ride before knights. Knights ride in parallel when their objectiv
 
 ---
 
-## Superpowers Plugin Integration
-
-If you use the [Superpowers](https://github.com/anthropics/claude-plugins-official/tree/main/superpowers) plugin, you can hook the Knights Brigade into its skill priority system. This makes Claude automatically consider deploying the brigade after brainstorming — no manual `/knights-brigade` invocation needed.
-
-### What it does
-
-The hook patches the Superpowers `using-superpowers` skill at session start to add a third priority tier:
-
-```
-1. Process skills first (brainstorming, debugging)
-2. Implementation skills second (frontend-design, mcp-builder)
-3. Team assembly third (knights-brigade)        ← added by the hook
-```
-
-This means when you say "build X", Claude will brainstorm first, then automatically assemble the right field corps instead of jumping straight to implementation.
-
-### Setup
-
-**1. Install the hook** (already done if you ran `./install.sh`):
-
-```bash
-mkdir -p ~/.claude/hooks
-cp hooks/patch-superpowers.sh ~/.claude/hooks/patch-superpowers.sh
-chmod +x ~/.claude/hooks/patch-superpowers.sh
-```
-
-**2. Add the SessionStart hook to your Claude settings** (`~/.claude/settings.json`):
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/patch-superpowers.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-If you already have other hooks or settings, merge the `SessionStart` entry into your existing config.
-
-### How it works
-
-- Runs once at the start of every Claude Code session
-- Finds the latest installed Superpowers plugin version
-- Checks if the patch has already been applied (idempotent — safe to re-run)
-- If not patched, injects `knights-brigade` as priority 3 in the skill ordering
-- Uses Python for reliable multi-line text replacement
-- Exit code 0 on all paths — never blocks session startup
-
-The hook is resilient to plugin updates. When Superpowers updates, the next session start will re-apply the patch to the new version automatically.
-
----
-
 ## Requirements
 
 - [Claude Code](https://claude.ai/code) CLI
 - Agents directory: `~/.claude/agents/`
 - Skills directory: `~/.claude/skills/`
-- *(Optional)* [Superpowers plugin](https://github.com/anthropics/claude-plugins-official/tree/main/superpowers) for automatic skill integration
 
 ---
 
@@ -234,8 +173,6 @@ knights-brigade/
 │   ├── herald.md
 │   ├── armorer.md
 │   └── war-scribe.md
-├── hooks/
-│   └── patch-superpowers.sh
 └── skills/
     ├── knights-brigade/
     │   └── SKILL.md
